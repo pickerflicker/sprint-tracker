@@ -34,4 +34,23 @@ export class StoryService {
     })
     .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
+
+  updateStory(storyId) {
+    let headers = new Headers();
+    headers.append('X-TrackerToken', 'f11effcf77851d80566c782851dfd012')
+
+    this.http.put(`https://www.pivotaltracker.com/services/v5/projects/1589495/stories/${storyId}`,
+      JSON.stringify(payload),
+      { headers: headers }
+    )
+    //
+    //   use labels for everything!
+    //      - current_state = label || state
+    //      - remove any old labels
+    //      - add new label
+    //      - if new state is a state, update state too
+    //
+    // this.states = ['unstarted', 'started', 'finished', 'delivered', 'accepted', 'merged'];
+    // this.labelStates = ['merged'];
+  }
 }

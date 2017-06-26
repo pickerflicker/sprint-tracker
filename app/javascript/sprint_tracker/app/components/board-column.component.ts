@@ -31,14 +31,6 @@ export class BoardColumnComponent {
 
   moveStory(story: Story) : void {
     story.current_state;
-    //
-    //   use labels for everything!
-    //      - current_state = label || state
-    //      - remove any old labels
-    //      - add new label
-    //      - if new state is a state, update state too
-    //
-    // this.states = ['unstarted', 'started', 'finished', 'delivered', 'accepted', 'merged'];
-    // this.labelStates = ['merged'];
+    // tbd
   }
 }
