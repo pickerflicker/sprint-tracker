@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
-import { Story } from './story';
+import { Story } from '../models/story';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -30,6 +30,7 @@ export class StoryService {
           labels: story.labels,
         });
       });
+
     })
     .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }

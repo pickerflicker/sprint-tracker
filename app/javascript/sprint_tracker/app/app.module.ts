@@ -4,11 +4,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { AppComponent } from './app.component';
-import { BoardComponent } from './board.component';
-import { BoardColumnComponent } from './board-column.component';
-import { BoardStoryComponent } from './board-story.component';
-import { StoryService } from './story.service';
+import {DndModule} from 'ng2-dnd';
+
+import { AppComponent } from './components/app.component';
+import { BoardComponent } from './components/board.component';
+import { BoardColumnComponent } from './components/board-column.component';
+import { BoardStoryComponent } from './components/board-story.component';
+import { StoryService } from './services/story.service';
 
 // Pipes
 import { LimitToPipe } from './pipes/limit-to.pipe';
@@ -18,7 +20,8 @@ import { StoryLabelPipe } from './pipes/story-label.pipe';
   imports: [
     BrowserModule,
     HttpModule,
-    FormsModule
+    FormsModule,
+    DndModule.forRoot()
   ],
   declarations: [
     AppComponent,

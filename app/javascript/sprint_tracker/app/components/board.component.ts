@@ -1,21 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Story } from './story';
-import { StoryService } from './story.service';
-import { BoardColumnComponent } from './board-column.component';
+import { Story } from '../models/story';
+import { StoryService } from '../services/story.service';
+import { BoardColumnComponent } from '../components/board-column.component';
 
 @Component({
   selector: 'project-board',
   styles: [`
-    .col {
+    .board-column {
+      width: 100%;
     }
   `],
   template: `
-  <div class="row">
-    <div *ngFor="let state of states" class="col">
-      <board-column [stories]="groupedStories[state]" [state]="state"></board-column>
-    </div>
-  </div>
+    <board-column *ngFor="let state of states" class="board-column" [stories]="groupedStories[state]" [state]="state"></board-column>
   `,
   providers: [StoryService],
 })
@@ -53,3 +50,5 @@ export class BoardComponent implements OnInit {
     this.getStories();
   }
 }
+
+//<board-column [stories]="groupedStories[state]" [state]="state"></board-column>

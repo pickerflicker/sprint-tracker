@@ -10,7 +10,7 @@ export class Story {
   labels: string[];
 
   constructor(attributes) {
-    this.id = attributes.number;
+    this.id = attributes.id;
     this.story_type = attributes.story_type;
     this.name = attributes.name;
     this.description = attributes.description;
