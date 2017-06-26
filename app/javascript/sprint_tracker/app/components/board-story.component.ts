@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Story } from '../models/story';
+import { UserService } from '../services/user.service';
+import { User } from '../models/user';
 
 @Component({
   selector: '[board-story]',
@@ -14,9 +16,15 @@ import { Story } from '../models/story';
   `],
   template: `
     <p>
-      [<a target="_blank" href="{{story.url}}" class="card-link">{{story.id}}</a>] <span class="badge">{{story.estimate}}</span> {{story.name}}
-      <br/>
-      Owners: {{story.owner_ids}}
+      <span *ngIf="story.story_type === 'bug'"><i class="fa fa-bug text-danger" aria-hidden="true"></i></span>
+      <span *ngIf="story.story_type === 'feature'"><i class="fa fa-star text-warning" aria-hidden="true"></i></span>
+      <span *ngIf="story.story_type === 'chore'"><i class="fa fa-cog" aria-hidden="true"></i></span>
+      [<a target="_blank" href="{{story.url}}" class="card-link">{{story.id}}</a>]
+      <span *ngIf="story.estimate" class="badge">{{story.estimate}} points</span>
+      <br />
+      {{story.name}}
+      <br />
+      Owners: <span class="label label-primary" *ngFor="let user of getUsers(story.owner_ids)">{{user.initials}}</span>
     </p>
     <div>
       <span class="label label-default" *ngFor="let label of story.labels; let i = index">
@@ -28,21 +36,15 @@ import { Story } from '../models/story';
 
 export class BoardStoryComponent {
   @Input() story: Story;
+  userService: UserService
+
+  constructor(userService: UserService) {
+    this.userService = userService;
+  }
+
+  getUsers(userIds): User[] {
+    return userIds.map( userId => {
+      return this.userService.getUsers().find(user => { return user.id === userId });
+    });
+  }
 }
-
-// <li class="list-group-item">
-//   {{story.name}}
-// </li>
-
-// <div class="card card-outline-primary" dnd-draggable [dragEnabled]="true" [dragData]="story" [dropZones]="['demo1']">
-// <div>
-//   <div class="card-block">
-//     <h4 class="card-title"></h4>
-//     <p class="card-text" style="word-break: break-word">{{story.description | limitTo: 100}}</p>
-//     <a target="_blank" href="{{story.url}}" class="card-link">Story link</a>
-//   </div>
-//   <ul class="list-group list-group-flush">
-//    <li class="list-group-item">Estimate: {{story.estimate}}</li>
-//    <li class="list-group-item">Labels: {{story.labels | storyLabel}}</li>
-//    <li class="list-group-item">Owners: {{story.owner_ids.join(', ')}}</li>
-//  </ul>

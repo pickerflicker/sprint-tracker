@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Story } from '../models/story';
+import { User } from '../models/user';
 import { StoryService } from '../services/story.service';
+import { UserService } from '../services/user.service';
 import { BoardColumnComponent } from '../components/board-column.component';
 
 @Component({
@@ -19,12 +21,14 @@ import { BoardColumnComponent } from '../components/board-column.component';
 
 export class BoardComponent implements OnInit {
   storyService: StoryService
+  userService: UserService
   states: string[];
   labelStates: string[];
   groupedStories: {};
 
-  constructor(storyService: StoryService) {
+  constructor(storyService: StoryService, userService: UserService) {
     this.storyService = storyService;
+    this.userService = userService;
     this.states = ['unstarted', 'started', 'finished', 'delivered', 'accepted', 'merged'];
     this.labelStates = ['uat', 'uat approved', 'merged'];
     this.groupedStories = {};
@@ -34,6 +38,12 @@ export class BoardComponent implements OnInit {
     this.storyService.getCurrentIteration().subscribe(data => {
       var stories: Story[] = data;
       this.parseStories(stories);
+    });
+  }
+
+  getUsersAndStories(): void {
+    this.userService.getAll().subscribe(data => {
+      this.getStories();
     });
   }
 
@@ -47,7 +57,7 @@ export class BoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.states.forEach( state => this.groupedStories[state] = []);
-    this.getStories();
+    this.getUsersAndStories();
   }
 }
 

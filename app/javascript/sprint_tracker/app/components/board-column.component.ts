@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Story } from '../models/story';
+import { User } from '../models/user';
 
 @Component({
   selector: 'board-column',
@@ -8,7 +9,7 @@ import { Story } from '../models/story';
       <div class="panel-heading">{{state}}</div>
       <div class="panel-body" dnd-sortable-container [dropZones]="['boxers-zone']" [sortableData]="stories">
         <ul class="list-group">
-          <li board-story *ngFor="let story of stories; let i = index" [story]="story" class="list-group-item" dnd-sortable [sortableIndex]="i"></li>
+          <li board-story *ngFor="let story of stories; let i = index" [story]="story" class="list-group-item" dnd-sortable [sortableIndex]="i" (onDropSuccess)="moveStory(story)"></li>
         </ul>
       </div>
     </div>
@@ -17,6 +18,10 @@ import { Story } from '../models/story';
     .panel {
       height: 100%;
     }
+
+    .list-group {
+      min-width: 300px;
+    }
   `]
 })
 
@@ -24,20 +29,16 @@ export class BoardColumnComponent {
   @Input() stories: Story[];
   @Input() state: string;
 
-  moveStory($event: any) : void {
-    let newStory: Story = $event.dragData;
-    debugger;
-    // update pivotal label here
-    this.stories.push(newStory);
+  moveStory(story: Story) : void {
+    story.current_state;
+    //
+    //   use labels for everything!
+    //      - current_state = label || state
+    //      - remove any old labels
+    //      - add new label
+    //      - if new state is a state, update state too
+    //
+    // this.states = ['unstarted', 'started', 'finished', 'delivered', 'accepted', 'merged'];
+    // this.labelStates = ['merged'];
   }
 }
-//<board-story *ngFor="let story of stories; let i = index" [story]="story"  dnd-sortable [sortableIndex]="i"></board-story>
-
-// <div class="panel panel-warning">
-//   <div class="panel-heading">{{state}}</div>
-//   <div class="panel-body">
-//     <ul class="list-group">
-//       <board-story *ngFor="let story of stories; let i = index" [story]="story"></board-story>
-//     </ul>
-//   </div>
-// </div>
