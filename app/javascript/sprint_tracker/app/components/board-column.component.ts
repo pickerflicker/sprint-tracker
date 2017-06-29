@@ -26,6 +26,10 @@ import { StoryService } from '../services/story.service';
       min-width: 250px;
     }
 
+    .list-group-item {
+      border: 1px solid #337ab7;
+    }
+
     .list-item-ios {
       background-color: lightgoldenrodyellow;
     }
