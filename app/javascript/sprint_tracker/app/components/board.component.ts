@@ -14,6 +14,7 @@ import { BoardColumnComponent } from '../components/board-column.component';
     }
   `],
   template: `
+    <button class="btn btn-info" (click)="filterLabel()">Filter</button>
     <board-column *ngFor="let state of states" class="board-column" [stories]="groupedStories[state]" [state]="state"></board-column>
   `,
   providers: [StoryService],
@@ -24,13 +25,15 @@ export class BoardComponent implements OnInit {
   userService: UserService
   states: string[];
   labelStates: string[];
+  allStates: string[];
   groupedStories: {};
 
   constructor(storyService: StoryService, userService: UserService) {
     this.storyService = storyService;
     this.userService = userService;
-    this.states = ['unstarted', 'started', 'finished', 'delivered', 'accepted', 'merged'];
+    this.states = ['unstarted', 'started', 'finished', 'uat', 'uat approved', 'delivered', 'accepted', 'merged'];
     this.labelStates = ['uat', 'uat approved', 'merged'];
+    this.allStates = this.states.concat(this.labelStates);
     this.groupedStories = {};
   }
 
@@ -50,7 +53,10 @@ export class BoardComponent implements OnInit {
   parseStories(stories: Story[]): void {
     stories.forEach( story => {
       if (story['story_type'] != 'release') {
-        this.groupedStories[story['current_state']].push(story);
+        let storyState = story.labels.find( label => {
+          return this.allStates.indexOf(label) > -1;
+        });
+        this.groupedStories[storyState || story['current_state']].push(story);
       }
     });
   }
@@ -59,6 +65,11 @@ export class BoardComponent implements OnInit {
     this.states.forEach( state => this.groupedStories[state] = []);
     this.getUsersAndStories();
   }
-}
 
-//<board-column [stories]="groupedStories[state]" [state]="state"></board-column>
+  filterLabel() {
+    console.log('clicked!');
+    this.groupedStories['finished'] = this.groupedStories['finished'].filter(story => {
+      return story.labels.indexOf('ios') > -1;
+    });
+  }
+}

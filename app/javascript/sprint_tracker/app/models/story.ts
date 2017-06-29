@@ -9,15 +9,19 @@ export class Story {
   owner_ids: number[];
   labels: string[];
 
-  constructor(attributes) {
-    this.id = attributes.id;
-    this.story_type = attributes.story_type;
-    this.name = attributes.name;
-    this.description = attributes.description;
-    this.current_state = attributes.current_state;
-    this.url = attributes.url;
-    this.estimate = attributes.estimate;
-    this.owner_ids = attributes.owner_ids;
-    this.labels = attributes.labels;
+  constructor(jsonData) {
+    this.id = jsonData.id;
+    this.story_type = jsonData.story_type;
+    this.name = jsonData.name;
+    this.description = jsonData.description;
+    this.current_state = jsonData.current_state;
+    this.url = jsonData.url;
+    this.estimate = jsonData.estimate;
+    this.owner_ids = jsonData.owner_ids;
+    this.labels = jsonData.labels.map(label => label.name);
+  }
+
+  hasLabel(label):boolean {
+    return this.labels.indexOf(label) > -1;
   }
 }

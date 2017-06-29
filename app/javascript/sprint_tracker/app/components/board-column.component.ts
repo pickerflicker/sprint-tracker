@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Story } from '../models/story';
 import { User } from '../models/user';
+import { StoryService } from '../services/story.service';
 
 @Component({
   selector: 'board-column',
@@ -9,7 +10,9 @@ import { User } from '../models/user';
       <div class="panel-heading">{{state}}</div>
       <div class="panel-body" dnd-sortable-container [dropZones]="['boxers-zone']" [sortableData]="stories">
         <ul class="list-group">
-          <li board-story *ngFor="let story of stories; let i = index" [story]="story" class="list-group-item" dnd-sortable [sortableIndex]="i" (onDropSuccess)="moveStory(story)"></li>
+          <li [ngClass]="story.hasLabel('ios')?'list-item-ios':story.hasLabel('platform')?'list-item-platform':''"
+            board-story *ngFor="let story of stories; let i = index" [story]="story" class="list-group-item"
+            dnd-sortable [sortableIndex]="i" (onDropSuccess)="moveStory(story)"></li>
         </ul>
       </div>
     </div>
@@ -20,7 +23,15 @@ import { User } from '../models/user';
     }
 
     .list-group {
-      min-width: 300px;
+      min-width: 250px;
+    }
+
+    .list-item-ios {
+      background-color: lightgoldenrodyellow;
+    }
+
+    .list-item-platform {
+      background-color: lavender;
     }
   `]
 })
@@ -28,9 +39,15 @@ import { User } from '../models/user';
 export class BoardColumnComponent {
   @Input() stories: Story[];
   @Input() state: string;
+  storyService: StoryService;
+
+  constructor (storyService: StoryService) {
+    this.storyService = storyService;
+  }
 
   moveStory(story: Story) : void {
-    story.current_state;
-    // tbd
+    this.storyService.updateStory(story, this.state).subscribe(updatedStory => {
+      Object.assign(story, updatedStory);
+    });
   }
 }

@@ -27,8 +27,8 @@ import { User } from '../models/user';
       Owners: <span class="label label-primary" *ngFor="let user of getUsers(story.owner_ids)">{{user.initials}}</span>
     </p>
     <div>
-      <span class="label label-default" *ngFor="let label of story.labels; let i = index">
-        {{label.name}}
+      <span class="label label-default" *ngFor="let label of story.labels">
+        {{label}}
       </span>
     </div>
   `
