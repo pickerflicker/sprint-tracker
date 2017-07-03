@@ -21,8 +21,13 @@ import { User } from '../models/user';
       <span *ngIf="story.story_type === 'chore'"><i class="fa fa-cog" aria-hidden="true"></i></span>
       [<a target="_blank" href="{{story.url}}">{{story.id}}</a>]
       <span *ngIf="story.estimate" class="badge">{{story.estimate}} points</span>
+      <span class="pull-right" (click)="toggleDetails()"><i [ngClass]="showDetails?'fa fa-chevron-down':'fa fa-chevron-right'" aria-hidden="true"></i></span>
       <br />
-      {{story.name}}
+      <strong>{{story.name}}</strong>
+
+      <span *ngIf="showDetails"><br />
+      {{story.description || 'No Description'}}
+      </span>
       <br />
       Owners: <span class="label label-primary" *ngFor="let user of getUsers(story.owner_ids)">{{user.initials}}</span>
     </p>
@@ -37,14 +42,20 @@ import { User } from '../models/user';
 export class BoardStoryComponent {
   @Input() story: Story;
   userService: UserService
+  showDetails: boolean;
 
   constructor(userService: UserService) {
     this.userService = userService;
+    this.showDetails = false;
   }
 
   getUsers(userIds): User[] {
     return userIds.map( userId => {
       return this.userService.getUsers().find(user => { return user.id === userId });
     });
+  }
+
+  toggleDetails(): void {
+    this.showDetails = !this.showDetails;
   }
 }

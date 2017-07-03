@@ -14,7 +14,7 @@ export class StoryService {
 
   constructor(private http: Http) {
     this.pivotalStates = ['unstarted', 'started', 'finished', 'delivered', 'accepted'];
-    this.allStates = ['unstarted', 'started', 'finished', 'uat', 'uat approved', 'delivered', 'accepted', 'merged'];
+    this.allStates = ['unstarted', 'started', 'finished', 'delivered', 'accepted', 'merged'];
   }
 
   getCurrentIteration(projectId): Observable<Iteration> {

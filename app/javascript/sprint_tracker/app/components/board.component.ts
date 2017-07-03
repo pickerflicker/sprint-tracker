@@ -67,8 +67,8 @@ export class BoardComponent implements OnInit {
     this.projectService = projectService;
     this.storyService = storyService;
     this.userService = userService;
-    this.states = ['unstarted', 'started', 'finished', 'uat', 'uat approved', 'delivered', 'accepted', 'merged'];
-    this.labelStates = ['uat', 'uat approved', 'merged'];
+    this.states = ['unstarted', 'started', 'finished', 'delivered', 'accepted', 'merged'];
+    this.labelStates = ['merged'];
     this.allStates = this.states.concat(this.labelStates);
     this.groupedStories = {};
     this.allStories = [];

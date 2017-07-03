@@ -28,6 +28,7 @@ import { StoryService } from '../services/story.service';
 
     .list-group-item {
       border: 1px solid #337ab7;
+      word-break: break-all;
     }
 
     .list-item-ios {
