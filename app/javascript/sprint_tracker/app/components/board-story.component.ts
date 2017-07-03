@@ -19,7 +19,7 @@ import { User } from '../models/user';
       <span *ngIf="story.story_type === 'bug'"><i class="fa fa-bug text-danger" aria-hidden="true"></i></span>
       <span *ngIf="story.story_type === 'feature'"><i class="fa fa-star text-warning" aria-hidden="true"></i></span>
       <span *ngIf="story.story_type === 'chore'"><i class="fa fa-cog" aria-hidden="true"></i></span>
-      [<a target="_blank" href="{{story.url}}" class="card-link">{{story.id}}</a>]
+      [<a target="_blank" href="{{story.url}}">{{story.id}}</a>]
       <span *ngIf="story.estimate" class="badge">{{story.estimate}} points</span>
       <br />
       {{story.name}}

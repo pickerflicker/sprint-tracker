@@ -13,6 +13,7 @@ import { BoardColumnComponent } from './components/board-column.component';
 import { BoardStoryComponent } from './components/board-story.component';
 import { StoryService } from './services/story.service';
 import { UserService } from './services/user.service';
+import { LabelService } from './services/label.service';
 
 // Pipes
 import { LimitToPipe } from './pipes/limit-to.pipe';
@@ -34,7 +35,7 @@ import { StoryLabelPipe } from './pipes/story-label.pipe';
     LimitToPipe,
     StoryLabelPipe
   ],
-  providers: [StoryService, UserService],
+  providers: [StoryService, UserService, LabelService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

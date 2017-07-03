@@ -33,12 +33,11 @@ import { BoardColumnComponent } from '../components/board-column.component';
       <board-column *ngFor="let state of states" class="board-column" [stories]="groupedStories[state]" [state]="state"></board-column>
     </div>
   `,
-  providers: [StoryService],
 })
 
 export class BoardComponent implements OnInit {
-  storyService: StoryService
-  userService: UserService
+  storyService: StoryService;
+  userService: UserService;
   states: string[];
   labelStates: string[];
   allStates: string[];

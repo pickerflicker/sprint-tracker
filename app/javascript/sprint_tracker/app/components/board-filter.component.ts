@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
 import { Story } from '../models/story';
+import { LabelService } from '../services/label.service';
 
 @Component({
   selector: 'board-filter',
@@ -18,27 +18,24 @@ import { Story } from '../models/story';
             platform
         </label>
       </div>
+      <button class="btn btn-info btn-xs" (click)="resetFilters()">Reset All Filters</button>
     </div>
-    <div class="col-sm-1">
+    <div class="col-sm-2">
       <div class="form-group">
         <label>
           Label
         </label>
-        <div class="dropdown">
-          <button class="btn btn-default dropdown-toggle" type="button" id="filterDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            none
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="filterDropdownMenu">
-            <li><a href="#">ios</a></li>
-            <li><a href="#">platform</a></li>
-            <li><a href="#">other</a></li>
-          </ul>
-        </div>
+        <select class="form-control" [(ngModel)]="filters.label" (ngModelChange)="filter()">
+          <option *ngFor="let label of allLabels">
+            {{label}}
+          </option>
+        </select>
       </div>
     </div>
-    <div class="col-sm-1">
-      <button class="btn btn-default" (click)="resetFilters()">Reset All Filters</button>
+    <div class="col-sm-2">
+    <div class="form-group">
+      <label for="usr">Search:</label>
+      <input type="text" class="form-control" [(ngModel)]="filters.text" (ngModelChange)="filter()">
     </div>
   `,
   styles: [`
@@ -48,11 +45,20 @@ import { Story } from '../models/story';
 export class BoardFilterComponent {
   @Input() allStories: Story[];
   @Output() onFiltered = new EventEmitter<Story[]>();
+  labelService: LabelService;
   filteredStories: Story[];
   filters = { ios: false, platform: false, text: null, label: null };
+  allLabels: string[];
+
+  constructor(labelService: LabelService) {
+    this.labelService = labelService;
+  }
 
   ngOnInit() {
     this.filteredStories = this.allStories;
+    this.labelService.getAll().subscribe(data => {
+      this.allLabels = data;
+    });
   }
 
   filter(): void {
@@ -77,8 +83,12 @@ export class BoardFilterComponent {
     }
 
     if (this.filters.text) {
+      let terms = this.filters.text.trim().toLowerCase().split(/\s+/);
       this.filteredStories = this.filteredStories.filter(story => {
-        return story.name.indexOf(this.filters.text) > -1 || story.description.indexOf(this.filters.text) > -1;
+        return terms.some(function(term) {
+          return (story.name || '').toLowerCase().indexOf(term) > -1 ||
+            (story.description || '').toLowerCase().indexOf(term) > -1;
+        });
       });
     }
 
