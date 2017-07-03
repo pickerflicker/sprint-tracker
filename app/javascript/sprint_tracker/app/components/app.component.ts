@@ -4,17 +4,11 @@ import { Component } from '@angular/core';
   selector: 'my-app',
   template: `
     <div>
-      <h1>{{title}}</h1>
-      <project-board class="board-container"></project-board>
+      <project-board></project-board>
     </div>
   `,
-  styles: [`
-    .board-container {
-      display: flex;
-    }
-  `],
+  styles: [],
 })
 
 export class AppComponent {
-  title = 'Sprint Tracker';
 }

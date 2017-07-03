@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Story } from '../models/story';
+import { Iteration } from '../models/iteration';
 import { User } from '../models/user';
 import { StoryService } from '../services/story.service';
 import { UserService } from '../services/user.service';
@@ -12,10 +13,25 @@ import { BoardColumnComponent } from '../components/board-column.component';
     .board-column {
       width: 100%;
     }
+
+    .board-container {
+      display: flex;
+    }
+
+    .header {
+      padding: 15px 0 0 15px;
+    }
   `],
   template: `
-    <button class="btn btn-info" (click)="filterLabel()">Filter</button>
-    <board-column *ngFor="let state of states" class="board-column" [stories]="groupedStories[state]" [state]="state"></board-column>
+    <div class="row header">
+      <div class="col-sm-3"><h1>{{title}}</h1>
+        <h5 *ngIf="iteration">({{iteration.start.toDateString()}} - {{iteration.finish.toDateString()}})</h5>
+      </div>
+      <board-filter *ngIf="allStories.length > 0" [allStories]="allStories" (onFiltered)="onFiltered($event)"></board-filter>
+    </div>
+    <div class="board-container">
+      <board-column *ngFor="let state of states" class="board-column" [stories]="groupedStories[state]" [state]="state"></board-column>
+    </div>
   `,
   providers: [StoryService],
 })
@@ -27,6 +43,9 @@ export class BoardComponent implements OnInit {
   labelStates: string[];
   allStates: string[];
   groupedStories: {};
+  allStories: Story[];
+  iteration: Iteration;
+  title = 'Sprint Tracker';
 
   constructor(storyService: StoryService, userService: UserService) {
     this.storyService = storyService;
@@ -35,12 +54,19 @@ export class BoardComponent implements OnInit {
     this.labelStates = ['uat', 'uat approved', 'merged'];
     this.allStates = this.states.concat(this.labelStates);
     this.groupedStories = {};
+    this.allStories = [];
+  }
+
+  onFiltered(stories: Story[]): void {
+    this.resetGroupedStories();
+    this.parseStories(stories);
   }
 
   getStories(): void {
     this.storyService.getCurrentIteration().subscribe(data => {
-      var stories: Story[] = data;
-      this.parseStories(stories);
+      this.iteration = data;
+      this.allStories = this.iteration.stories;
+      this.parseStories(this.allStories);
     });
   }
 
@@ -62,14 +88,11 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.states.forEach( state => this.groupedStories[state] = []);
+    this.resetGroupedStories();
     this.getUsersAndStories();
   }
 
-  filterLabel() {
-    console.log('clicked!');
-    this.groupedStories['finished'] = this.groupedStories['finished'].filter(story => {
-      return story.labels.indexOf('ios') > -1;
-    });
+  resetGroupedStories(): void {
+    this.states.forEach( state => this.groupedStories[state] = []);
   }
 }

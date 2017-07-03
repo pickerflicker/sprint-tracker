@@ -23,7 +23,7 @@ import { StoryService } from '../services/story.service';
     }
 
     .list-group {
-      min-width: 250px;
+      min-width: 275px;
     }
 
     .list-group-item {

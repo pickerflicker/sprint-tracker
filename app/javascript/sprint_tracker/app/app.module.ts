@@ -8,6 +8,7 @@ import {DndModule} from 'ng2-dnd';
 
 import { AppComponent } from './components/app.component';
 import { BoardComponent } from './components/board.component';
+import { BoardFilterComponent } from './components/board-filter.component';
 import { BoardColumnComponent } from './components/board-column.component';
 import { BoardStoryComponent } from './components/board-story.component';
 import { StoryService } from './services/story.service';
@@ -27,6 +28,7 @@ import { StoryLabelPipe } from './pipes/story-label.pipe';
   declarations: [
     AppComponent,
     BoardComponent,
+    BoardFilterComponent,
     BoardColumnComponent,
     BoardStoryComponent,
     LimitToPipe,

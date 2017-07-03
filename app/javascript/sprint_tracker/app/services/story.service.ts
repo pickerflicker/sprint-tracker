@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
+import { Iteration } from '../models/iteration';
 import { Story } from '../models/story';
 
 import 'rxjs/add/operator/map';
@@ -16,16 +17,14 @@ export class StoryService {
     this.allStates = ['unstarted', 'started', 'finished', 'uat', 'uat approved', 'delivered', 'accepted', 'merged'];
   }
 
-  getCurrentIteration(): Observable<Story[]> {
+  getCurrentIteration(): Observable<Iteration> {
     let headers = new Headers();
     headers.append('X-TrackerToken', 'f11effcf77851d80566c782851dfd012')
 
     return this.http.get('https://www.pivotaltracker.com/services/v5/projects/1589495/iterations?scope=current',
       { headers: headers }
     ).map((res:Response) => {
-      return res.json()[0].stories.map((storyJson) => {
-        return new Story(storyJson);
-      });
+      return new Iteration(res.json()[0]);
     })
     .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
