@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Project } from '../models/project';
 import { Story } from '../models/story';
 import { Iteration } from '../models/iteration';
 import { User } from '../models/user';
+import { ProjectService } from '../services/project.service';
 import { StoryService } from '../services/story.service';
 import { UserService } from '../services/user.service';
 import { BoardColumnComponent } from '../components/board-column.component';
@@ -27,15 +29,28 @@ import { BoardColumnComponent } from '../components/board-column.component';
       <div class="col-sm-3"><h1>{{title}}</h1>
         <h5 *ngIf="iteration">({{iteration.start.toDateString()}} - {{iteration.finish.toDateString()}})</h5>
       </div>
-      <board-filter *ngIf="allStories.length > 0" [allStories]="allStories" (onFiltered)="onFiltered($event)"></board-filter>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label>
+            Select Project
+          </label>
+          <select class="form-control" [(ngModel)]="currentProjectId" (ngModelChange)="changeProject()">
+            <option *ngFor="let project of projects" [ngValue]="project.id">
+              {{project.name}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <board-filter *ngIf="allStories.length > 0" [allStories]="allStories" [projectId]="currentProjectId" (onFiltered)="onFiltered($event)"></board-filter>
     </div>
     <div class="board-container">
-      <board-column *ngFor="let state of states" class="board-column" [stories]="groupedStories[state]" [state]="state"></board-column>
+      <board-column *ngFor="let state of states" class="board-column" [projectId]="currentProjectId" [stories]="groupedStories[state]" [state]="state"></board-column>
     </div>
   `,
 })
 
 export class BoardComponent implements OnInit {
+  projectService: ProjectService;
   storyService: StoryService;
   userService: UserService;
   states: string[];
@@ -44,9 +59,12 @@ export class BoardComponent implements OnInit {
   groupedStories: {};
   allStories: Story[];
   iteration: Iteration;
+  projects: Project[];
   title = 'Sprint Tracker';
+  currentProjectId: number;
 
-  constructor(storyService: StoryService, userService: UserService) {
+  constructor(projectService: ProjectService, storyService: StoryService, userService: UserService) {
+    this.projectService = projectService;
     this.storyService = storyService;
     this.userService = userService;
     this.states = ['unstarted', 'started', 'finished', 'uat', 'uat approved', 'delivered', 'accepted', 'merged'];
@@ -62,7 +80,7 @@ export class BoardComponent implements OnInit {
   }
 
   getStories(): void {
-    this.storyService.getCurrentIteration().subscribe(data => {
+    this.storyService.getCurrentIteration(this.currentProjectId).subscribe(data => {
       this.iteration = data;
       this.allStories = this.iteration.stories;
       this.parseStories(this.allStories);
@@ -70,7 +88,7 @@ export class BoardComponent implements OnInit {
   }
 
   getUsersAndStories(): void {
-    this.userService.getAll().subscribe(data => {
+    this.userService.getAll(this.currentProjectId).subscribe(data => {
       this.getStories();
     });
   }
@@ -87,11 +105,22 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.resetGroupedStories();
-    this.getUsersAndStories();
+    this.projectService.getAll().subscribe(data => {
+      this.projects = data;
+      if (this.projects.length > 0) {
+        this.currentProjectId = this.projects[0].id;
+        this.resetGroupedStories();
+        this.getUsersAndStories();
+      }
+    });
   }
 
   resetGroupedStories(): void {
     this.states.forEach( state => this.groupedStories[state] = []);
+  }
+
+  changeProject(): void {
+    this.resetGroupedStories();
+    this.getUsersAndStories();
   }
 }

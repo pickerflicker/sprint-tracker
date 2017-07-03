@@ -17,11 +17,11 @@ export class StoryService {
     this.allStates = ['unstarted', 'started', 'finished', 'uat', 'uat approved', 'delivered', 'accepted', 'merged'];
   }
 
-  getCurrentIteration(): Observable<Iteration> {
+  getCurrentIteration(projectId): Observable<Iteration> {
     let headers = new Headers();
     headers.append('X-TrackerToken', 'f11effcf77851d80566c782851dfd012')
 
-    return this.http.get('https://www.pivotaltracker.com/services/v5/projects/1589495/iterations?scope=current',
+    return this.http.get(`https://www.pivotaltracker.com/services/v5/projects/${projectId}/iterations?scope=current`,
       { headers: headers }
     ).map((res:Response) => {
       return new Iteration(res.json()[0]);
@@ -29,7 +29,7 @@ export class StoryService {
     .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
 
-  updateStory(story: Story, newState: string): Observable<Story> {
+  updateStory(projectId: number, story: Story, newState: string): Observable<Story> {
     let headers = new Headers();
     headers.append('X-TrackerToken', 'f11effcf77851d80566c782851dfd012');
     headers.append('Content-Type', 'application/json');
@@ -50,7 +50,7 @@ export class StoryService {
       payload['current_state'] = newState;
     }
 
-    let url = `https://www.pivotaltracker.com/services/v5/projects/1589495/stories/${story.id}`;
+    let url = `https://www.pivotaltracker.com/services/v5/projects/${projectId}/stories/${story.id}`;
     return this.http.put(url, JSON.stringify(payload), { headers: headers }).map((res:Response) => {
       return new Story(res.json());
     });

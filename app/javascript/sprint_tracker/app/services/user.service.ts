@@ -12,11 +12,11 @@ export class UserService {
 
   constructor (private http: Http) {}
 
-  getAll(): Observable<User[]> {
+  getAll(projectId: number): Observable<User[]> {
     let headers = new Headers();
     headers.append('X-TrackerToken', 'f11effcf77851d80566c782851dfd012')
 
-    return this.http.get('https://www.pivotaltracker.com/services/v5/projects/1589495/memberships?fields=person',
+    return this.http.get(`https://www.pivotaltracker.com/services/v5/projects/${projectId}/memberships?fields=person`,
       { headers: headers }
     ).map((res:Response) => {
       this.users = res.json().map((data) => {

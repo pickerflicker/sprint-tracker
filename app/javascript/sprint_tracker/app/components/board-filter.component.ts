@@ -23,7 +23,7 @@ import { LabelService } from '../services/label.service';
     <div class="col-sm-2">
       <div class="form-group">
         <label>
-          Label
+          Label:
         </label>
         <select class="form-control" [(ngModel)]="filters.label" (ngModelChange)="filter()">
           <option *ngFor="let label of allLabels">
@@ -44,6 +44,7 @@ import { LabelService } from '../services/label.service';
 
 export class BoardFilterComponent {
   @Input() allStories: Story[];
+  @Input() projectId: number;
   @Output() onFiltered = new EventEmitter<Story[]>();
   labelService: LabelService;
   filteredStories: Story[];
@@ -56,7 +57,7 @@ export class BoardFilterComponent {
 
   ngOnInit() {
     this.filteredStories = this.allStories;
-    this.labelService.getAll().subscribe(data => {
+    this.labelService.getAll(this.projectId).subscribe(data => {
       this.allLabels = data;
     });
   }

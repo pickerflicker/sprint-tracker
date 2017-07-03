@@ -41,6 +41,7 @@ import { StoryService } from '../services/story.service';
 })
 
 export class BoardColumnComponent {
+  @Input() projectId: number;
   @Input() stories: Story[];
   @Input() state: string;
   storyService: StoryService;
@@ -50,7 +51,7 @@ export class BoardColumnComponent {
   }
 
   moveStory(story: Story) : void {
-    this.storyService.updateStory(story, this.state).subscribe(updatedStory => {
+    this.storyService.updateStory(this.projectId, story, this.state).subscribe(updatedStory => {
       Object.assign(story, updatedStory);
     });
   }
