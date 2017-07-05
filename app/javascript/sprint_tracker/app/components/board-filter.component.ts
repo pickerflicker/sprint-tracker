@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { Story } from '../models/story';
 import { LabelService } from '../services/label.service';
 
@@ -46,20 +47,18 @@ export class BoardFilterComponent {
   @Input() allStories: Story[];
   @Input() projectId: number;
   @Output() onFiltered = new EventEmitter<Story[]>();
-  labelService: LabelService;
   filteredStories: Story[];
   filters = { ios: false, platform: false, text: null, label: null };
   allLabels: string[];
 
-  constructor(labelService: LabelService) {
-    this.labelService = labelService;
-  }
+  constructor(private labelService: LabelService, private router: Router) {}
 
   ngOnInit() {
     this.filteredStories = this.allStories;
-    this.labelService.getAll(this.projectId).subscribe(data => {
-      this.allLabels = data;
-    });
+    this.labelService.getAll(this.projectId).subscribe(
+      data => this.allLabels = data,
+      err => this.router.navigate([''])
+    );
   }
 
   filter(): void {

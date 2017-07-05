@@ -41,11 +41,9 @@ import { User } from '../models/user';
 
 export class BoardStoryComponent {
   @Input() story: Story;
-  userService: UserService
   showDetails: boolean;
 
-  constructor(userService: UserService) {
-    this.userService = userService;
+  constructor(private userService: UserService) {
     this.showDetails = false;
   }
 

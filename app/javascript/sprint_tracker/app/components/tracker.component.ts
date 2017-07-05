@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'tracker-app',
+  selector: 'sprint-tracker',
   template: `
     <div>
-      <router-outlet></router-outlet>
+      <project-board></project-board>
     </div>
   `,
   styles: [],
 })
 
-export class AppComponent {
+export class TrackerComponent {
 }

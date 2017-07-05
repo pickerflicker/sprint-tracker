@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Project } from '../models/project';
 import { Story } from '../models/story';
@@ -50,9 +51,6 @@ import { BoardColumnComponent } from '../components/board-column.component';
 })
 
 export class BoardComponent implements OnInit {
-  projectService: ProjectService;
-  storyService: StoryService;
-  userService: UserService;
   states: string[];
   labelStates: string[];
   allStates: string[];
@@ -63,10 +61,7 @@ export class BoardComponent implements OnInit {
   title = 'Sprint Tracker';
   currentProjectId: number;
 
-  constructor(projectService: ProjectService, storyService: StoryService, userService: UserService) {
-    this.projectService = projectService;
-    this.storyService = storyService;
-    this.userService = userService;
+  constructor(private projectService: ProjectService, private storyService: StoryService, private userService: UserService, private router: Router) {
     this.states = ['unstarted', 'started', 'finished', 'delivered', 'accepted', 'merged'];
     this.labelStates = ['merged'];
     this.allStates = this.states.concat(this.labelStates);
@@ -80,17 +75,21 @@ export class BoardComponent implements OnInit {
   }
 
   getStories(): void {
-    this.storyService.getCurrentIteration(this.currentProjectId).subscribe(data => {
-      this.iteration = data;
-      this.allStories = this.iteration.stories;
-      this.parseStories(this.allStories);
-    });
+    this.storyService.getCurrentIteration(this.currentProjectId).subscribe(
+      data => {
+        this.iteration = data;
+        this.allStories = this.iteration.stories;
+        this.parseStories(this.allStories);
+      },
+      err => this.router.navigate([''])
+    );
   }
 
   getUsersAndStories(): void {
-    this.userService.getAll(this.currentProjectId).subscribe(data => {
-      this.getStories();
-    });
+    this.userService.getAll(this.currentProjectId).subscribe(
+      data => this.getStories(),
+      err => this.router.navigate([''])
+    );
   }
 
   parseStories(stories: Story[]): void {
@@ -105,14 +104,17 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.projectService.getAll().subscribe(data => {
-      this.projects = data;
-      if (this.projects.length > 0) {
-        this.currentProjectId = this.projects[0].id;
-        this.resetGroupedStories();
-        this.getUsersAndStories();
-      }
-    });
+    this.projectService.getAll().subscribe(
+      data => {
+        this.projects = data;
+        if (this.projects.length > 0) {
+          this.currentProjectId = this.projects[0].id;
+          this.resetGroupedStories();
+          this.getUsersAndStories();
+        }
+      },
+      err => this.router.navigate([''])
+    );
   }
 
   resetGroupedStories(): void {

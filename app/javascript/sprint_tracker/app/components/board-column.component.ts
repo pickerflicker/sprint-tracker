@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { Story } from '../models/story';
 import { User } from '../models/user';
 import { StoryService } from '../services/story.service';
@@ -45,15 +46,13 @@ export class BoardColumnComponent {
   @Input() projectId: number;
   @Input() stories: Story[];
   @Input() state: string;
-  storyService: StoryService;
 
-  constructor (storyService: StoryService) {
-    this.storyService = storyService;
-  }
+  constructor (private storyService: StoryService, private router: Router) {}
 
   moveStory(story: Story) : void {
-    this.storyService.updateStory(this.projectId, story, this.state).subscribe(updatedStory => {
-      Object.assign(story, updatedStory);
-    });
+    this.storyService.updateStory(this.projectId, story, this.state).subscribe(
+      updatedStory => Object.assign(story, updatedStory),
+      err => this.router.navigate([''])
+    );
   }
 }

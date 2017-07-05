@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
-
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs/Rx';
+
+import { LocalStorageService } from '../services/local-storage.service';
 
 @Injectable()
 export class LabelService {
   labels: string[];
 
-  constructor (private http: Http) {}
+  constructor (private http: Http, private localStorageService: LocalStorageService) {}
 
   getAll(projectId: number): Observable<string[]> {
     let headers = new Headers();
-    headers.append('X-TrackerToken', 'f11effcf77851d80566c782851dfd012')
+    let key:string = this.localStorageService.getNative().getItem('pivotalApiKey');
+    headers.append('X-TrackerToken', key);
 
     return this.http.get(`https://www.pivotaltracker.com/services/v5/projects/${projectId}/labels?fields=name`,
       { headers: headers }
